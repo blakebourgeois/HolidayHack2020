@@ -2,3 +2,14 @@ Need to run the Santavator
 To do so I've picked up several items laying around in the overworld
 (can't list all what and where, though)
 
+In my santavator panel I have access to 
+* a nut
+* a candy cane bit
+* a green bulb
+
+The green bulb can change the color of the light stream
+I can use the nut to reflect the light into the green slot with a bow on it
+This gives me a "green" power light which...should give me access to the lobby and talks.
+I'll need to find a red light (with santa hat) and a yellow? light (with cristmas tree) to access more floors
+
+And this is everything for objective 4...

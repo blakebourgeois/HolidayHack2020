@@ -1,0 +1,61 @@
+Open HID lock in the workshop.
+
+Talk to Bushy Evergreen and Fitzy Shortstack for hints
+
+Need to get to the workshop on floor 1 1/2 requiring red and green lights
+
+By moving the nut on the elevator panel to the middle of the stream, i can split the original green stream into to and add the red bulb to the left stream, which turns it red. then we're able to proceed to workshop
+
+Picked up a proxmark back in the wrapping room
+"You can use a Proxmark to capture the facility code and ID value of HID ProxCard badge by running lf hid read when you are close enough to someone with a badge."
+You can also use a Proxmark to impersonate a badge to unlock a door, if the badge you impersonate has access. lf hid sim -r 2006......
+
+guess I'll watch the Larry Pesce talk
+
+Data Format
+Card returns facility code and card ID
+Facility code is 1-255
+Card ID is 1-65535
+
+encoded in Weigand protocol 26-bit data format
+Parity Bit, 8 bits for Facility code, 16 bits for Card ID, Parity Bit
+
+lf hid read
+gets data
+
+lf hid sim -r {raw}
+use a captured card
+
+lf hid clone {raw} to clone them (may not be useful, don't know if we'd grab writable t5557 RFID in this exercise)
+
+cards will typically all share a facility code
+and their card numbers are typically issued sequentially as well
+it's possible that earlier cards have higher access
+
+lf hid sim -w H10301 --fc 118 --cn 16612
+simulate facility code and card ID w/o having to set wiegand value
+
+Noel Boetie:
+#db# TAG ID: 2006e22f08 (6020) - Format Len: 26 bit - FC: 113 - Card: 6020
+Sparkle Redberry:
+#db# TAG ID: 2006e22f0d (6022) - Format Len: 26 bit - FC: 113 - Card: 6022
+Shinny Upatree:
+#db# TAG ID: 2006e22f13 (6025) - Format Len: 26 bit - FC: 113 - Card: 6025
+Angel Candysalt:
+#db# TAG ID: 2006e22f31 (6040) - Format Len: 26 bit - FC: 113 - Card: 6040
+Holly Evergreen:
+#db# TAG ID: 2006e22f10 (6024) - Format Len: 26 bit - FC: 113 - Card: 6024
+Bow Ninecandle:
+#db# TAG ID: 2006e22f0e (6023) - Format Len: 26 bit - FC: 113 - Card: 6023
+
+lf hid sim -w H10301 --fc 113 --cn 6020 (nothing)
+missing 6021...why is 6040 such an outlier? 
+
+going talk to fitzy shortstack since i skipped that challenge. might give more info that trying each number in sequence and waiting 10 seconds
+Fizty says that Shinny is trusted by Santa
+
+lf hid sim -w H10301 --fc 113 --cn 6025
+Door opens!
+
+From this dark room you can control Santa. I believe there were some places that required Santa or other authorized elves...but I can't remember what they were
+

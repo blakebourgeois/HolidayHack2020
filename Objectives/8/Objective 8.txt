@@ -1,0 +1,20 @@
+Using Santa, visited the broken tag generator with Noel Boetie.
+"Talk to Holly Evergreen in the kitchen for help with this."
+
+sounds like we need to trigger an error, get a script path, use an LFI exploit to get the file
+then move from there...
+
+got this error:
+ERROR
+413 Request Entity Too Large
+nginx/1.19.5
+
+got this error:
+ERROR
+Something went wrong!
+Error in /app/lib/app.rb: Unsupported file type: /tmp/RackMultipart20201211-1-515nrt.exe
+does this for exe, py, rb, ini, dll, etc files
+
+
+Q: What value is in the environment variable GREETZ? 
+

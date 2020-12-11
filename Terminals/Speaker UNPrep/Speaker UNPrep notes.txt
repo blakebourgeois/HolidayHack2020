@@ -1,0 +1,289 @@
+Need to get into Speaker Unpreparedness room buy using ./door, which requires a password
+
+possibly also mess with ./lights and ./vending-machines?
+
+elf@27556e1f6024 ~ $ cat lights.conf
+password: E$ed633d885dcb9b2f3f0118361de4d57752712c27c5316a95d9e5e5b124
+name: elf-technician
+
+elf@27556e1f6024 ~ $ cat vending-machines.json
+{
+  "name": "elf-maintenance",
+  "password": "LVEdQPpBwr"
+
+running ./door gives the hint, like Bushy, that the pass is probably in the binary
+strings door
+"Be sure to finish the challenge in prod: And don't forget, the password is "Op3nTheD00r"
+
+./door complete, now we need to check out the lab ones
+starting by removing the conf and json files for lights and vending as suggested
+
+LIGHTS:
+"error: could not load /home/elf/lab/lights.conf"
+
+If you blank out the password field in lights.conf and run it with no input it works
+probably need to strings lights to get a key and algorithm, the "password" gets decrypted at runtime and input must match
+
+interesting looking stringspasswordlightson
+invalid nonce value
+Lights on!
+00010203040506070809101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899
+
+if you delete password value from lights.conf get a "password is missing" error
+talked to bushy again and he mentioned setting username to encrypted value, since the username is output in the display
+
+now it shows "welcome back, Computer-TurnLightsOn"
+works when running from the real command...onto vending
+
+started by setting vending-machines.json to vending-machines.bak
+when running...
+ALERT! ALERT! Configuration file is missing! New Configuration File Creator Activated!
+
+Please enter the name > Blake
+Please enter the password > MyPassword
+
+Welcome, Blake! It looks like you want to turn the vending machines back on?
+Please enter the vending-machine-back-on code > yes
+Checking......
+Beep boop invalid password
+
+elf@b77182e60d9e ~/lab $ cat vending-machines.bak
+{
+  "name": "elf-maintenance",
+  "password": "LVEdQPpBwr"
+
+elf@b77182e60d9e ~/lab $ cat vending-machines.json
+{
+  "name": "Blake",
+  "password": "6LwtWS2c5R"
+}
+
+elf@b77182e60d9e ~/lab $ ./vending-machines 
+The elves are hungry!
+If the door's still closed or the lights are still off, you know because
+you can hear them complaining about the turned-off vending machines!
+You can probably make some friends if you can get them back on...
+Loading configuration from: /home/elf/lab/vending-machines.json
+I wonder what would happen if it couldn't find its config file? Maybe that's
+something you could figure out in the lab...
+ALERT! ALERT! Configuration file is missing! New Configuration File Creator Activated!
+Please enter the name > Blake
+Please enter the password > MyMuchLongerPasswordItsVeryLongMyDude
+Welcome, Blake! It looks like you want to turn the vending machines back on?
+Please enter the vending-machine-back-on code > Nope
+Checking......
+Beep boop invalid password
+elf@b77182e60d9e ~/lab $ cat vending-machines.json 
+{
+  "name": "Blake",
+  "password": "6Lic6kKcbyZyucbDTjAd8gbpwN5xhXfjivjdA"
+
+Password is as long as the input string
+password uses previous inputs for encryption, it's not a 1:1 cipher or anything
+could potentially brute force it since it looks like the beginning would be the same, don't want to go down that route though
+the username does not matter
+
+elf@b77182e60d9e ~/lab $ ./vending-machines 
+The elves are hungry!
+
+If the door's still closed or the lights are still off, you know because
+you can hear them complaining about the turned-off vending machines!
+You can probably make some friends if you can get them back on...
+
+Loading configuration from: /home/elf/lab/vending-machines.json
+
+I wonder what would happen if it couldn't find its config file? Maybe that's
+something you could figure out in the lab...
+
+ALERT! ALERT! Configuration file is missing! New Configuration File Creator Activated!
+
+Please enter the name > Quicksand
+Please enter the password > MyPassword
+
+Welcome, Quicksand! It looks like you want to turn the vending machines back on?
+Please enter the vending-machine-back-on code > No
+Checking......
+Beep boop invalid password
+elf@b77182e60d9e ~/lab $ cat vending-machines.json
+{
+  "name": "Quicksand",
+  "password": "6LwtWS2c5R"
+
+doesn't seem to be using any kind of salt or randomness either so the key might be discoverable, we'd potentially need to know the algo too
+we know it's not a block cipher
+interesting data from strings?
+8nameu!1
+passwordH9
+s9GeOw8knMaofqbR1Y5AcCuT7iUXDLyhHSPzEFQ6ZxsmI4NvtB0rK32pWgdjJVlVU9Rcwyn086mMhjzfN5ZuG7DLaiqbvxYFBkA1K3EldS2gpH4sPQterWJoTOIXCbVeLZIYUso36vEfMXAPRjWO75rGTn0kNJua24di8QwySC9BclHKqhDF1pzxtmgtBedQUSgwkiWu6258ynCczlaJKRp39rNGb14DxZIsjVH7TEXfMqomOLYhA0vFPaf6lArPo4T07s2hHvqWdwmJcQCeKUi3LRp8n1FBMZuXIVgkyGxjN95zbDYOtSEcWEwYfakeq7sRX28xmSg9nKFAThvPuzCBHjIGbrJ4p1My0V3tODiZL5NldoUQ6phEWu5fAOyriQD4XPsbTNR21MZm798CevYGLnKd3U60BoaHVSlqcFkztgIJjwxgPRbexThC19FJBcLyuDNmAXEUawfWQnOYVrqM3jZi8soGk5pz02vHISlKd6t47
+
+Bushy suggests setting a pass like AAAAAAAAAAA and that it could be a rotation or codebook, i don't think it's rotation but codebook makes s9GeOw8knMaofqbR1Y5AcCuT7iUXDLyhHSPzEFQ6ZxsmI4NvtB0rK32pWgdjJVlVU9Rcwyn086mMhjzfN5ZuG7DLaiqbvxYFBkA1K3EldS2gpH4sPQterWJoTOIXCbVeLZIYUso36vEfMXAPRjWO75rGTn0kNJua24di8QwySC9BclHKqhDF1pzxtmgtBedQUSgwkiWu6258ynCczlaJKRp39rNGb14DxZIsjVH7TEXfMqomOLYhA0vFPaf6lArPo4T07s2hHvqWdwmJcQCeKUi3LRp8n1FBMZuXIVgkyGxjN95zbDYOtSEcWEwYfakeq7sRX28xmSg9nKFAThvPuzCBHjIGbrJ4p1My0V3tODiZL5NldoUQ6phEWu5fAOyriQD4XPsbTNR21MZm798CevYGLnKd3U60BoaHVSlqcFkztgIJjwxgPRbexThC19FJBcLyuDNmAXEUawfWQnOYVrqM3jZi8soGk5pz02vHISlKd6t47
+
+yup there's a pattern
+
+Please enter the name > b
+Please enter the password > AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+Welcome, b! It looks like you want to turn the vending machines back on?
+Please enter the vending-machine-back-on code > no
+Checking......
+Beep boop invalid password
+elf@d3e50542df0f ~/lab $ cat vending-machines.json 
+{
+  "name": "b",
+  "password": "XiGRehmwXiGRehmwXiGRehmwXiGRehmwXiGRehmwXiGRehmwXiGRehmwXiGR"
+
+
+Please enter the name > b
+Please enter the password > BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+Welcome, b! It looks like you want to turn the vending machines back on?
+Please enter the vending-machine-back-on code > no
+Checking......
+Beep boop invalid password
+elf@d3e50542df0f ~/lab $ cat vending-machines.js
+cat: vending-machines.js: No such file or directory
+elf@d3e50542df0f ~/lab $ cat vending-machines.json
+{
+  "name": "b",
+  "password": "DqTpKv7fDqTpKv7fDqTpKv7fDqTpKv7fDqTpKv"
+
+  A: XiGRehmw
+  B: DqTpKv7f
+  C: Lbn3UP9W
+
+Please enter the password > ABABABABABABABABAB
+
+Welcome, b! It looks like you want to turn the vending machines back on?
+Please enter the vending-machine-back-on code > f
+Checking......
+Beep boop invalid password
+elf@d3e50542df0f ~/lab $ cat vending-machines.json 
+{
+  "name": "b",
+  "password": "XqGpevmfXqGpevmfXq"
+
+okay this is not chaining, and because i'm not a smart person i'm going to brute force this in a stupid s9GeOw8knMaofqbR1Y5AcCuT7iUXDLyhHSPzEFQ6ZxsmI4NvtB0rK32pWgdjJVlVU9Rcwyn086mMhjzfN5ZuG7DLaiqbvxYFBkA1K3EldS2gpH4sPQterWJoTOIXCbVeLZIYUso36vEfMXAPRjWO75rGTn0kNJua24di8QwySC9BclHKqhDF1pzxtmgtBedQUSgwkiWu6258ynCczlaJKRp39rNGb14DxZIsjVH7TEXfMqomOLYhA0vFPaf6lArPo4T07s2hHvqWdwmJcQCeKUi3LRp8n1FBMZuXIVgkyGxjN95zbDYOtSEcWEwYfakeq7sRX28xmSg9nKFAThvPuzCBHjIGbrJ4p1My0V3tODiZL5NldoUQ6phEWu5fAOyriQD4XPsbTNR21MZm798CevYGLnKd3U60BoaHVSlqcFkztgIJjwxgPRbexThC19FJBcLyuDNmAXEUawfWQnOYVrqM3jZi8soGk5pz02vHISlKd6t47
+  AAAAAAAA
+  BBBBBBBB
+  CCCCCCCC
+  DDDDDDDD
+  EEEEEEEE
+  FFFFFFFF
+  GGGGGGGG
+  HHHHHHHH
+  IIIIIIII
+  JJJJJJJJ
+  KKKKKKKK
+  LLLLLLLL
+  MMMMMMMM
+  NNNNNNNN
+  OOOOOOOO
+  PPPPPPPP
+  QQQQQQQQ
+  RRRRRRRR
+  SSSSSSSS
+  TTTTTTTT
+  UUUUUUUU
+  VVVVVVVV
+  WWWWWWWW
+  XXXXXXXX
+  YYYYYYYY
+  ZZZZZZZZ
+  aaaaaaaa
+  bbbbbbbb
+  cccccccc
+  dddddddd
+  eeeeeeee
+  ffffffff
+  gggggggg
+  hhhhhhhh
+  iiiiiiii
+  jjjjjjjj
+  kkkkkkkk
+  llllllll
+  mmmmmmmm
+  nnnnnnnn
+  oooooooo
+  pppppppp
+  qqqqqqqq
+  rrrrrrrr
+  ssssssss
+  tttttttt
+  uuuuuuuu
+  vvvvvvvv
+  wwwwwwww
+  xxxxxxxx
+  yyyyyyyy
+  zzzzzzzz
+
+AAAAAAAABBBBBBBBCCCCCCCCDDDDDDDDEEEEEEEEFFFFFFFFGGGGGGGGHHHHHHHHIIIIIIIIJJJJJJJJKKKKKKKKLLLLLLLLMMMMMMMMNNNNNNNNOOOOOOOOPPPPPPPPQQQQQQQQRRRRRRRRSSSSSSSSTTTTTTTTUUUUUUUUVVVVVVVVWWWWWWWWXXXXXXXXYYYYYYYYZZZZZZZZaaaaaaaabbbbbbbbccccccccddddddddeeeeeeeeffffffffgggggggghhhhhhhhiiiiiiiijjjjjjjjkkkkkkkkllllllllmmmmmmmmnnnnnnnnooooooooppppppppqqqqqqqqrrrrrrrrssssssssttttttttuuuuuuuuvvvvvvvvwwwwwwwwxxxxxxxxyyyyyyyyzzzzzzzz
+
+didn't account for numbers...but those should be easy
+LVEdQPpB: CandyCan
+wr      : e1
+
+XiGRehmw A
+DqTpKv7f B
+Lbn3UP9W C
+yv09iu8Q D
+hxkr3zCn E
+HYNNLCeO F
+SFJGRBvY G
+PBubpHYV H
+zka18jGr I
+EA24nILq J
+F14D1GnM K
+QKdxFbK3 L
+63iZBrdj M
+ZE8IMJ3Z N
+xlQsZ4Ui O
+sdwjup68 P
+mSyVX10s Q
+I2SHIMBo R
+4gC7VyoG S
+Np9Tg0ak T
+vHBEkVH5 U
+t4cXy3Vp V
+BslfGtSz W
+0PHMxOl0 X 
+rQKqjDq2 Y
+KtqoNicv Z
+9Vbtacpg a
+GUVBfWhP b
+e9ee6EER c
+ORLdlwWb d
+wcZQAYue e
+8wIUrf5x f
+kyYSPafT g
+nnUgokAh h
+M0sw4eOC i
+a8okTqy1 j
+o63i07r9 k
+fm6W7siF l
+qMvusRQJ m
+bhE62XDB n
+Rjf2h24c o
+1zM5H8XL p
+YfX8vxPy q
+5NAyqmsu r
+A5PnWSbD s
+cZRCdgTN t
+Cujcw9Nm u
+uGWzmnRA v
+T7OlJK2X w
+7D7acF1E x
+iL5JQAMU y
+UarKCTZa z
+
+00000000111111112222222233333333444444445555555566666666777777778888888899999999
+3ehm9ZFH 0
+2rDO5LkI 1
+pWFLz5zS 2
+WJ1YbNtl 3
+gophDlgK 4
+dTzAYdId 5
+jOx0OoJ6 6
+JItvtUjt 7
+VXmFSQw4 8 
+lCgPE6x7 9
+
+password should be CandyCane1

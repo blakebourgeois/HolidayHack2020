@@ -1,0 +1,18 @@
+This isn't a terminal per se but I don't want to create an even more complicated folder structure
+
+Fitzy says the number is 756-8347
+also provides the dial up noise: https://upload.wikimedia.org/wikipedia/commons/3/33/Dial_up_modem_noises.ogg
+
+The phone provides the following "sound effects"
+
+beDURRdunditty
+SCHHRRHHRTHRTR
+aaah
+baaDEEbrrr
+WEWEWweweewee
+
+I'm guessing I've got to make the sequence of the dial up sound so...
+
+baaDEEbrrr > aaah > WEWEWwrwrrwrr > beDURRdunditty > SCHHRRHHRTHRTR
+
+
