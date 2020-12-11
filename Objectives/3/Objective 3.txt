@@ -1,0 +1,12 @@
+received santa-shop.exe binary
+Sugarplum shares this is an electron app, mentions ASAR file extraction
+
+unzipped santa-shop.exe
+unzipped app-64.7z
+found app.asar in the resouces folder
+
+found this line in file:
+const SANTA_PASSWORD = 'santapass';
+
+Q: Help Sugarplum Mary in the Courtyard find the supervisor password for the point-of-sale terminal. What's the password?
+A: santapass

