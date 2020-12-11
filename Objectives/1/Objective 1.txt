@@ -1,0 +1,20 @@
+Steps:
+Download billboard.png
+Open billboard.png in image editor (GIMP)
+
+Use the warp transform tool set to "swirl clockwise" and start clicking around
+
+List:
+
+Ed - Two Front Teeth
+*an - OU Jersey
+*remy - Blanket
+Brian 
+Josh Wright - proxmark
+Clay - Darth Vader Suit
+Tad - Holiday lights
+Phil - Stuffed Pikachu
+Jerry - Trip to North Pole
+
+Q: What gift is Santa planning on getting Josh Wright for the holidays?
+A: proxmark
