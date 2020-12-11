@@ -1,0 +1,1 @@
+run tmux attach to jump to a running session

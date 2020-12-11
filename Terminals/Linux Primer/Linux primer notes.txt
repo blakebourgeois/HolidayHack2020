@@ -1,0 +1,68 @@
+Step 1: type yes to begin
+
+Directory listing:
+ls
+
+Find munchkin inside munchkin
+cat munchkin_19315479765589239
+
+Remove munchkin in home directory
+rm munchkin_19315479765589239
+
+print present working directory
+pwd
+
+Find the hidden munchkin
+ls -la
+
+Find munchin in command history
+cat .bash_history
+
+Find munchkin in environment variables
+printenv
+
+Head into the workshop
+cd workshop
+
+A munchkin is hiding in a toolbox. use grep to find the toolbox
+grep -r -i munchkin .
+
+A munchkin is blocking lollipop_engine from starting, run the binary to retrieve it
+chmod +x lollipop_engine
+./lollipop_engine
+
+Munchkins have blown the fuses. 
+cd electrical/
+mv blown_fuse0 fuse0
+
+Make a symlink named fuse1 pointing to fuse0
+ln -s fuse0 fuse1
+
+Copy fuse1 to fuse2
+cp fuse1 fuse2
+
+Add characters "MUNCHKIN_REPELLENT" into the file fuse2
+echo MUNCHKIN_REPELLENT >> fuse2
+(don't misspell it like i did)
+
+Find munchkin in /opt/munchkin_den
+find /opt/munchkin_den/ munchkin (? i didn't notice this one when it was successful)
+
+find file owned by user munchkin
+find . -user munchkin
+
+find file created by munchkins greater than 108kb and less than 110kb located in /opt/munchkin_den.
+find . -size +108k -size -110k
+
+list running processes
+ps aux
+
+munchkin process is listening on a tcp port, have the only listening port display to screen
+netstat -l
+
+service on port 54321 is an HTTP server, interact to get the last munchkin
+curl 127.0.0.1:54321
+
+stop 14516_munchkin process to collect lollipops
+ps aux
+kill 27396

@@ -1,0 +1,120 @@
+Visit the terminal next to Shinny Upatree
+
+need to supply a wordlist to bucket_finder.rb and get Santa's Wrapper3000
+Going to read the digi.ninja resources and watch the Josh Wright talk
+
+examples from josh's talk
+private-kringlecon
+joshsprivatestuff
+oracle
+microsoft
+msdev-east-cortana2020
+
+"google s3 bucket wordlist"
+suffixes and prefixes
+company names, abbreviations, products
+region specific information
+basic names
+
+Proposed wordlist:
+private-kringlecon
+public-kringlecon
+public-kringlecon2020
+private-kringlecon2020
+kringlecon
+kringlecon2020
+Santa
+santa2020
+santasprivatestuff
+santaspublicstuff
+Wrapper3000
+santaswrapper3000
+elfu
+elfu2020
+elfudev-north-Wrapper3000
+northpole
+northpole2020
+elf
+elf2020
+Shinny
+shinny2020
+
+Found:
+santa2020 (access denied)
+northpole (access denied)
+elf (access denied)
+
+Whoops, didn't realize the bucket_finder in the home directory was a directory
+there is a wordlist there including "kringlecastle" and "wrapper"
+
+kringlecastle2020
+wrapper2020
+santa-kringlecastle-Wrapper3000
+santa-kringlecastle-wrapper
+private-kringlecastle
+public-kringlecastle
+private-kringlecastle2020
+public-kringlecastle2020
+private-wrapper
+private-wrapper2020
+public-wrapper2020
+public-wrapper2020
+
+no hits...
+
+eventually got to this point when i found out i'm an idiot
+kringlecastle
+wrapper
+santa
+santa-kringlecastle-Wrapper3000
+santa-kringlecastle-wrapper3000
+santa-Wrapper3000
+santa-wrapper3000
+santa-wrapper2020
+santa-Wrapper2020
+Wrapper3000-2020
+wrapper3000-2020
+kringlecastle-santa-Wrapper3000
+kringlecastle-santa-wrapper3000
+elf-kringlecastle-wrapper3000
+elf-kringlecastle-Wrapper3000
+elf-northpole-wrapper3000
+elf-northpole-Wrapper3000
+northpole-wrapper3000
+northpole-Wrapper3000
+santa-northpole-wrapper3000
+santa-northpole-Wrapper3000
+kringlecastle-northpole-Wrapper3000
+kringlecastle-northpole-wrapper3000
+kringlecastle-northpole-wrapper2020
+kringlecastle-northpole-Wrapper2020
+kringlecastle-wrapper3000
+kringlecastle-Wrapper3000
+kringlecastle-santa-wrapper3000
+kringlecastle-santa-Wrapper3000
+santa-kringlecastle-Wrapper30002020
+santa-kringlecastle-wrapper30002020
+santa-kringlecastle-wrapper3000-2020
+santa-kringlecastle-Wrapper3000-2020
+wrapper3000
+
+used the download flag to get the file, wrapper3000/package
+cat file, get this
+UEsDBAoAAAAAAIAwhFEbRT8anwEAAJ8BAAAcABwAcGFja2FnZS50eHQuWi54ei54eGQudGFyLmJ6MlVUCQADoBfKX6AXyl91eAsAAQT2AQAABBQAAABCWmg5MUFZJlNZ2ktivwABHv+Q3hASgGSn//AvBxDwf/xe0gQAAAgwAVmkYRTKe1PVM9U0ekMg2poAAAGgPUPUGqehhCMSgaBoAD1NNAAAAyEmJpR5QGg0bSPU/VA0eo9IaHqBkxw2YZK2NUASOegDIzwMXMHBCFACgIEvQ2Jrg8V50tDjh61Pt3Q8CmgpFFunc1Ipui+SqsYB04M/gWKKc0Vs2DXkzeJmiktINqjo3JjKAA4dLgLtPN15oADLe80tnfLGXhIWaJMiEeSX992uxodRJ6EAzIFzqSbWtnNqCTEDML9AK7HHSzyyBYKwCFBVJh17T636a6YgyjX0eE0IsCbjcBkRPgkKz6q0okb1sWicMaky2Mgsqw2nUm5ayPHUeIktnBIvkiUWxYEiRs5nFOM8MTk8SitV7lcxOKst2QedSxZ851ceDQexsLsJ3C89Z/gQ6Xn6KBKqFsKyTkaqO+1FgmImtHKoJkMctd2B9JkcwvMr+hWIEcIQjAZGhSKYNPxHJFqJ3t32Vjgn/OGdQJiIHv4u5IpwoSG0lsV+UEsBAh4DCgAAAAAAgDCEURtFPxqfAQAAnwEAABwAGAAAAAAAAAAAAKSBAAAAAHBhY2thZ2UudHh0LloueHoueHhkLnRhci5iejJVVAUAA6AXyl91eAsAAQT2AQAABBQAAABQSwUGAAAAAAEAAQBiAAAA9QEAAAAA
+
+looking at it, it's base64, decoding it the signature looks like a ZIP file (PK header)
+base64 -d package > package.zip
+unzip package.zip extracts "package.txt.Z.xz.xxd.tar.bz2"
+sig starts BZh
+bzip2 -d package.txt.Z.xz.xxd.tar.bz2 extracts package.txt.Z.xz.xxd.tar
+tar -xf package.txt.Z.xz.xxd.tar extracts package.txt.Z.xz.xxd
+cat that looks like a .7z file? nope it's an "xz" archive, xz is on the box, but file format not recognized
+file is actually just ascci text so need to convert to a file, duh, xxd to reverse
+xxd -r package.txt.Z.xz.xxd > package.txt.Z.xz now we can use xz
+now we have package.txt.Z which is a compressed file
+gunzip package.txt.ZIP
+cat package.txt 
+"North Pole: The Frostiest Place on Earth"
+
+Q: When you unwrap the over-wrapped file, what text string is inside the package?
+A: North Pole: The Frostiest Place on Earth
