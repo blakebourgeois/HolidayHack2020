@@ -1,0 +1,40 @@
+Going to watch the Chris Elgee talk for an overview
+Notes:
+all messages have their own 11bit CAN ID
+message runs across the bus, most items can read it and only interact if it's intended for them
+can use obd-ii to interact with the system
+security not built in, now we're pulling stuff off the main bus into isolated compartments
+
+can simulate can, dump can data and read it in wireshark
+cars/manufacturers might have unique dialects, can't see it all in wireshark
+sometimes you might want to interact with the system, generate stuff, and then start pulling sources out
+
+Tip:
+You can hide lines you don't want to see with commands like cat file.txt | grep -v badstuff
+
+Challenge context:
+Also in the data are
+a LOCK signal, an UNLOCK signal, and one more LOCK. Can you find the UNLOCK?
+We'd like to encode another key mechanism.
+Find the timestamp of the UNLOCK code in candump.log and submit it to
+./runtoanswer!
+
+format appears to be (timestamp) [source] id # data
+so we need to filter out the ID of idling, there should be three other IDs
+elf@da5a86dc810a:~$ cat candump.log | grep -v 244 | grep -v 188
+(1608926664.626448) vcan0 19B#000000000000 (lock)
+(1608926671.122520) vcan0 19B#00000F000000 (unlock)
+(1608926674.092148) vcan0 19B#000000000000 (lock)
+
+okay so the lock only appears to use a single ID, 19B, but the data submission is different for lock v unlock
+
+initially tried using the full (1608926671.122520)  (with and without parenthesis) and it didn't work so i tried runtoanswer straight and got better details
+
+elf@da5a86dc810a:~$ ./runtoanswer       
+There are two LOCK codes and one UNLOCK code in the log.  What is the decimal portion of the UNLOCK timestamp?
+(e.g., if the timestamp of the UNLOCK were 1608926672.391456, you would enter 391456.
+> 122520
+Your answer: 122520
+
+Checking....
+Your answer is correct!

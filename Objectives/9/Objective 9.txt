@@ -1,0 +1,131 @@
+
+
+Objective:
+Go to the NetWars room on the roof and help Alabaster Snowball get access back to a host using ARP. 
+Retrieve the document at /NORTH_POLE_Land_Use_Board_Meeting_Minutes.txt. 
+Who recused herself from the vote described on the document?
+
+Context from Alabaster:
+"Oh, I see the Scapy Present Packet Prepper has already been completed!
+
+Now you can help me get access to this machine.
+
+It seems that some interloper here at the North Pole has taken control of the host.
+
+We need to regain access to some important documents associated with Kringle Castle.
+
+Maybe we should try a machine-in-the-middle attack?
+
+That could give us access to manipulate DNS responses.
+
+But we'll still need to cook up something to change the HTTP response."
+
+Opening the terminal gives this:
+Jack Frost has hijacked the host at 10.6.6.35 with some custom malware.
+Help the North Pole by getting command line access back to this host.
+
+Read the HELP.md file for information to help you in this endeavor.
+
+Note: The terminal lifetime expires after 30 or more minutes so be 
+sure to copy off any essential work you have done as you go.
+
+there's a TMUX session open with 3 panels
+
+Hints:
+Jack Frost must have gotten malware on our host at 10.6.6.35 
+because we can no longer access it. 
+Try sniffing the eth0 interface using tcpdump -nni eth0 
+to see if you can view any traffic from that host.
+
+The host is performing an ARP request. 
+Perhaps we could do a spoof to perform a machine-in-the-middle attack. 
+I think we have some sample scapy traffic scripts that could help you in 
+/home/guest/scripts.
+
+Hmmm, looks like the host does a DNS request after 
+you successfully do an ARP spoof. Let's return a DNS response 
+resolving the request to our IP.
+
+The malware on the host does an HTTP request for a .deb package. 
+Maybe we can get command line access by sending it a command in a customized .deb file
+http://www.wannescolman.be/?p=98
+
+HELP.md
+# How To Resize and Switch Terminal Panes:
+You can use the key combinations ( Ctrl+B ↑ or ↓ ) to resize the terminals.
+You can use the key combinations ( Ctrl+B o ) to switch terminal panes.
+See tmuxcheatsheet.com for more details
+
+# To Add An Additional Terminal Pane:
+`/usr/bin/tmux split-window -hb`
+
+# To exit a terminal pane simply type:
+`exit`
+
+# To Launch a webserver to serve-up files/folder in a local directory:
+```
+cd /my/directory/with/files
+python3 -m http.server 80
+```
+
+# A Sample ARP pcap can be viewed at:
+https://www.cloudshark.org/captures/d97c5b81b057
+
+# A Sample DNS pcap can be viewed at:
+https://www.cloudshark.org/captures/0320b9b57d35
+
+# If Reading arp.pcap with tcpdump or tshark be sure to disable name
+# resolution or it will stall when reading:
+```
+tshark -nnr arp.pcap
+tcpdump -nnr arp.pcap
+```
+
+
+STEPS:
+guest@b94fae458021:~$ tcpdump -nni eth0
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+16:42:27.105888 ARP, Request who-has 10.6.6.53 tell 10.6.6.35, length 28
+
+We need:
+Dest MAC: 4c:24:57:ab:ed:84
+Source MAC (us): 02:42:0a:06:00:02
+Dest IP: 10.6.6.35
+Spoofed IP: 10.6.6.53
+Actual IP: 10.6.0.2
+
+guest@b94fae458021:~$ arp 10.6.6.35
+10.6.6.35 (10.6.6.35) -- no entry
+guest@b94fae458021:~$ ping 10.6.6.35
+PING 10.6.6.35 (10.6.6.35) 56(84) bytes of data.
+64 bytes from 10.6.6.35: icmp_seq=1 ttl=64 time=0.119 ms
+64 bytes from 10.6.6.35: icmp_seq=2 ttl=64 time=0.097 ms
+^C
+--- 10.6.6.35 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1002ms
+rtt min/avg/max/mdev = 0.097/0.108/0.119/0.011 ms
+guest@b94fae458021:~$ arp 10.6.6.35
+Address                  HWtype  HWaddress           Flags Mask            Iface
+arp_requester.guestnet0  ether   4c:24:57:ab:ed:84   C                     eth0
+
+Have to keep the tcpdump running while running the my_arp.py script to get the intercepted request.
+Would probably want to get that my_arp.py running in a continuous manner. 
+
+The intercepted DNS request is as follows:
+17:42:51.190188 IP 10.6.6.35.9252 > 10.6.6.53.53: 0+ A? ftp.osuosl.org. (32)
+
+After spoofing the DNS and pointing to our own IP the following activity is seen
+19:17:40.028669 IP 10.6.6.35.3926 > 10.6.6.53.53: 0+ A? ftp.osuosl.org. (32)
+19:17:40.057397 IP 10.6.6.53.53 > 10.6.6.35.3926: 0 1/0/0 A 10.6.0.2 (62)
+19:17:40.063714 IP 10.6.0.2.33444 > 10.6.6.35.64352: Flags [S], seq 1508715881, win 64240, options [mss 1460,sack
+OK,TS val 2149560333 ecr 0,nop,wscale 7], length 0
+
+running a python webserver during this shows this request19:17:40.028669 IP 10.6.6.35.3926 > 10.6.6.53.53: 0+ A? ftp.osuosl.org. (32)
+19:17:40.057397 IP 10.6.6.53.53 > 10.6.6.35.3926: 0 1/0/0 A 10.6.0.2 (62)
+19:17:40.063714 IP 10.6.0.2.33444 > 10.6.6.35.64352: Flags [S], seq 1508715881, win 64240, options [mss 1460,sack
+OK,TS val 2149560333 ecr 0,nop,wscale 7], length 0
+
+
+
+Answer: 

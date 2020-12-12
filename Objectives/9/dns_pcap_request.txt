@@ -1,0 +1,48 @@
+>>> packets[0].show()                                                                                            
+###[ Ethernet ]###                                                                                               
+  dst= 00:c0:9f:32:41:8c                                                                                         
+  src= 00:e0:18:b1:0c:ad                                                                                         
+  type= IPv4                                                                                                     
+###[ IP ]###                                                                                                     
+     version= 4                                                                                                  
+     ihl= 5                                                                                                      
+     tos= 0x0                                                                                                    
+     len= 60                                                                                                     
+     id= 0                                                                                                       
+     flags= DF  
+     frag= 0    
+     ttl= 64    
+     proto= udp
+     chksum= 0x6543
+     src= 192.168.170.8
+     dst= 192.168.170.20
+     \options\       
+###[ UDP ]###        
+        sport= 32795 
+        dport= domain
+        len= 40
+        chksum= 0xaf61        
+###[ DNS ]###                                           
+           id= 30144   
+           qr= 0         
+           opcode= QUERY
+           aa= 0                                        
+           tc= 0                                        
+           rd= 1      
+           ra= 0         
+           z= 0          
+           ad= 0          
+           cd= 0                                        
+           rcode= ok
+           qdcount= 1
+           ancount= 0       
+           nscount= 0
+           arcount= 0
+           \qd\
+            |###[ DNS Question Record ]### 
+            |  qname= 'www.netbsd.org.'
+            |  qtype= A
+            |  qclass= IN
+           an= None
+           ns= None
+           ar= None

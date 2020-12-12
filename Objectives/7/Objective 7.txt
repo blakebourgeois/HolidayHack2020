@@ -1,0 +1,64 @@
+Objective: Jack Frost is somehow inserting malicious messages onto the sleigh's CAN-D bus. We need you to exclude the malicious messages and no others to fix the sleigh. Visit the NetWars room on the roof and talk to Wunorse Openslae for hints.
+
+There's not much else to go on here, other than Chris's talk
+Based on that talk and the bit I got from the CAN-Bus investigation terminal I assume I shoud emulate real behavior and ensure those are counted and exclude the junk
+
+right now might spam some of these buttons and screenshot to get the data
+
+START   : 02A#00FF00
+STOP    : 02A#0000FF
+UNLOCK  : 19B#00000F000000
+LOCK    : 19B#000000000000
+
+(with vehicle off, is this significant?)
+STEERING (POSITIVE): 019#00000001 to 019#00000032 (hex values representing 1-50)
+STERRING (NEGATIVE): 019#FFFFFFCE to 019#FFFFFFFF (-50 to -1)
+STEERING (NEUTRAL) : 019#00000000
+
+vehicle on doesn't seem to matter, but this doesn't account for interactions between settings
+setting brake and steering to max doesn't seem to change their behavior
+
+(with vehicle off)
+BRAKE: 080#000001 to 080#000064 (1-100)
+    There are extra 080# messages that start after a value of 4, in the sub FFFFFF range
+    It seems to vary slighty
+    Initially thought it was a diff between the previous and new brake value but not sure
+
+(nothing happens if the vehicle is off)
+ACCELERATOR: ??? 
+
+RPM is probably going to be a variable, but we might be able to use the screenshot to find hex that matches in the queue
+this appears to be correct, RPM 9044 represented by 244#0000002354
+
+going to temporarily exclude noisy RPM sensor (all 244 events) but will need to kill that rule for final answer
+interesting: when you kill those events it also kills the dash equivalents
+
+can't seem to trigger anything for the accelerator at all
+
+after killing all the events that we know are good (with the exception of 244, blanket ban)
+
+
+getting a lot of 188#00000000 (but is it malicious or just noise?)
+19B#0xF2057
+019#0x33 (should this be possible?) do not appear to have a corresponding overage when negative steering
+I can't get those 080#xFFFFF~ adjacent messages anymore with my current filters and i'm not sure why
+they don't seem to filter right, not sure what i'm missing
+
+ah: wunorse gives more context when not playing as santa
+Turns out: Santa's sleigh uses a variation of CAN bus that we call CAN-D bus.
+And there's something naughty going on in that CAN-D bus.
+The brakes seem to shudder when I put some pressure on them, and the doors are acting oddly.
+I'm pretty sure we need to filter out naughty CAN-D-ID codes.
+There might even be some valid IDs with invalid data bytes.
+For security reasons, only Santa is allowed access to the sled and its CAN-D bus.
+I'll hit him up next time he's nearby.
+
+19B#0xF2057 for sure, then
+the 019 might be an outlier and shouldn't be worried about
+brakes after value 4 seems right, but I don't understand why the query is screwing up...
+
+something about the "greater than" wasn't working
+setting the queries to:
+ID: 19B; Operator: Equals; Criterion: 0000000F2057
+ID: 080; Operator: Contains; Criterion: FF 
+successfully fixes the sled
