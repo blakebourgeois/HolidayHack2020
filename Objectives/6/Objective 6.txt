@@ -1,0 +1,79 @@
+Took Santa to the Great Room to check out splunk
+https://splunk.kringlecastle.com/en-US/app/SA-kringleconsoc/kringleconsoc
+
+I feel this wasn't available without Santa? I can't remember
+
+Q1: How many distinct MITRE ATT&CK techniques did Alice emulate?		
+Alice's first command: | tstats count where index=* by index 
+manually counted the distinct technique categories
+Answer: 13
+
+Q2: What are the names of the two indexes that contain the results of emulating Enterprise ATT&CK technique 1059.003? (Put them in alphabetical order and separate them with a space)
+Alice shares this snippet:
+| tstats count where index=* by index 
+| search index=T*-win OR T*-main
+| rex field=index "(?<technique>t\d+)[\.\-].0*" 
+| stats dc(technique)
+
+looked through the results from the first search for t1059.003
+Answer: t1059.003-main t1059.003-win
+
+
+Q3: One technique that Santa had us simulate deals with 'system information discovery'. What is the full name of the registry key that is queried to determine the MachineGuid?
+corresponds to this: https://attack.mitre.org/techniques/T1082/
+alice shares this resource: https://github.com/redcanaryco/atomic-red-team/tree/master/atomics 
+info we need is here: https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1082/T1082.yaml
+
+Answer: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography
+
+Q4: According to events recorded by the Splunk Attack Range, when was the first OSTAP related atomic test executed? (Please provide the alphanumeric UTC timestamp.)
+alice provides the following index for looking at attacks: index=attack
+
+index=attack AND OSTAP | sort _time
+Answer: 2020-11-30T17:44:15Z
+
+Q5: One Atomic Red Team test executed by the Attack Range makes use of an open source package authored by frgnca on GitHub. According to Sysmon (Event Code 1) events in Splunk, what was the ProcessId associated with the first use of this component?
+frgnca wrote some cmdlets for audio controls
+index=attack "Test Name"="using device audio capture commandlet"
+
+first hit: 2020-11-30T17:05:11Z
+11/30/20 5:05:11.000 PM
+
+index=T1123 source="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational"
+index=T1123* source="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" EventID=1 CommandLine=*AudioDevice*
+
+Answer: 3648
+
+Q6: Alice ran a simulation of an attacker abusing Windows registry run keys. This technique leveraged a multi-line batch file that was also used by a few other techniques. What is the final command of this multi-line batch file used as part of this simulation?
+https://attack.mitre.org/techniques/T1547/
+https://attack.mitre.org/techniques/T1037/
+
+might be batstartup.bat or Discovery.bat?
+
+index=T1547*
+
+https://github.com/redcanaryco/atomic-red-team/blob/master/ARTifacts/Misc/Discovery.bat
+
+A: quser
+
+Q7: According to x509 certificate events captured by Zeek (formerly Bro), what is the serial number of the TLS certificate assigned to the Windows domain controller in the attack range?
+
+alice provides... index=* sourcetype=bro* 
+used fields navigator on the left to drill down to this query:
+index=* sourcetype=bro* sourcetype="bro:x509:json" "certificate.subject"="CN=win-dc-748.attackrange.local"
+
+then found the certificate.serial field
+
+A: 55FCEEBB21270D9249E86F4B9DC7AA60
+
+Encrypted using Santa's favorite phrase
+B64 encoded cipher text: 7FXjP1lyfKbyDK/MChyf36h7
+uses old algo w/ key ("we don't care about RFC 7565!")
+"splunk folks put it in their talk" > Stay Frosty (?)
+
+Cyberchef
+7FXjP1lyfKbyDK/MChyf36h7 > from Base64 > RC w/ Passphrase "Stay Frosty"
+output: The Lollipop Guild
+
+Q: What is the name of the adversary group that Santa feared would attack KringleCon?
+The Lollipop Guild
