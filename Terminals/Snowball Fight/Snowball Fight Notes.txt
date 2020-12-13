@@ -9,3 +9,21 @@ Could it be that the name a player provides has some connection to how the forts
 Knowing that, I can see how an elf might feed their Hard name into an Easy game to cheat a bit.
 But on Impossible, the best you get are rejected player names in the page comments. Can you use those somehow?
 
+Random Facts on Mersenne Twister notes:
+
+same seed leads to same output when using pseudo Random
+period: amount
+
+mersenne twiser, most widespread is MT-19937, large period.
+MT19937 period is large prime, 2^19937 - 1
+mostly statistically valid, quick, easy to implement
+
+if you have ~100 recent values from PRNG you can predict upcoming values
+tempers results, but is reversable
+
+we can recreate state array by reversing 624 random values, then run the function ourselves
+
+might need to figure out how the 32bit integer is being converted in to a float, 64bit integer
+
+tom provides toolkit: https://github.com/tliston/mt19937
+
