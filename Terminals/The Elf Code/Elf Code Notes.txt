@@ -1,0 +1,82 @@
+Level 1:
+Info:Program the elf to the end goal in no more than 2 lines of code and no more than 2 elf commands.
+elf.moveLeft(10)
+elf.moveUp(10)
+
+Level 2:
+Info:Program the elf to the end goal in no more than 5 lines of code and no more than 5 elf command/function execution statements in your code.
+Lever objective: Add 2 to the returned numeric value of running the function elf.get_lever(0) .
+
+elf.moveLeft(6)
+var answer = elf.get_lever(0) + 2
+elf.pull_lever(answer)
+elf.moveLeft(4)
+elf.moveUp(10)
+
+Level 3:
+Info:Program the elf to the end goal in no more than 4 lines of code and no more than 4 elf command/function execution statements in your code.
+
+elf.moveTo(lollipop[0])
+elf.moveTo(lollipop[1])
+elf.moveTo(lollipop[2])
+elf.moveUp(1)
+
+Level 4:
+note: you can use for loops
+note: you can use a high number when moving and the elf will go as far as it can
+
+Info:Program the elf to the end goal in no more than 7 lines of code and no more than 6 elf command/function execution statements in your code.
+
+var i = 0
+while (i < 2) {
+elf.moveLeft(3);
+elf.moveUp(15);
+elf.moveLeft(3);
+elf.moveDown(15);
+i++}
+
+Javascript minifier:
+for(var i=0;i<3;)elf.moveLeft(3),elf.moveUp(15),elf.moveLeft(3),elf.moveDown(15),i++;
+
+Level 5:
+note: use elf.moveTo(), try moving to munchkin[0]?
+Info:Program the elf to the end goal in no more than 10 lines of code and no more than 5 elf command/function execution statements in your code..
+
+munchkin quiz:
+Use elf.ask_munch(0) and I will send you an array of numbers and strings similar to:
+[1, 3, "a", "b", 4]
+Return an array that contains only numbers from the array that I give you. Send your answer using elf.tell_munch(answer).
+
+elf.moveTo(munchkin[0])
+var init = elf.ask_munch(0)
+var newinit = []
+var count = 0
+while (count < init.length){
+ if(Number.isInteger(init[count])){
+ newinit.push(init[count]) 
+ }
+  count++
+}
+elf.tell_munch(newinit)
+elf.moveUp(3)
+
+(minified): elf.moveTo(munchkin[0]);for(var init=elf.ask_munch(0),newinit=[],count=0;count<init.length;)Number.isInteger(init[count])&&newinit.push(init[count]),count++;elf.tell_munch(newinit),elf.moveUp(3);
+
+Level 6:
+two paths, level path may be easier
+Info:Program the elf to the end goal in no more than 15 lines of code and no more than 7 elf command/function execution statements in your code.
+
+var count = 0
+while(count < 5){
+    elf.moveTo(lollipop[count])
+    count++
+}
+elf.moveLeft(2)
+elf.moveUp(6)
+var myArray = elf.get_lever(0)
+myArray.splice(0,0,"munchkins rule")
+elf.pull_lever(myArray)
+elf.moveTo(munchkin[0])
+elf.moveUp(2)
+
+minified: for(var count=0;count<5;)elf.moveTo(lollipop[count]),count++;elf.moveLeft(2),elf.moveUp(6);var myArray=elf.get_lever(0);myArray.splice(0,0,"munchkins rule"),elf.pull_lever(myArray),elf.moveTo(munchkin[0]),elf.moveUp(2);

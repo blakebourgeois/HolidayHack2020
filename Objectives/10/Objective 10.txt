@@ -1,0 +1,16 @@
+Objective: Bypass the Santavator fingerprint sensor. Enter Santa's office without Santa's fingerprint.
+
+don't know if this is relevant, might want to check URL as not-santa
+https://elevator.kringlecastle.com/?challenge=santamode-elevator4&id=59227861-a889-46fe-ae5a-8413802e7fae&username=bbour53&area=santamode-santavator4&location=1,2&tokens=marble,elevator-key,nut2,yellowlight,candycane,portals,ball,greenlight,workshop-button,redlight,besanta
+
+elf in lobby says there "may be a way to bypass the s4 stream"
+would this also bypass fingerprint?
+
+https://elevator.kringlecastle.com/?challenge=elevator&id=1fdd8e67-9bd3-4eea-babd-4acd112ef4b3&username=bbour53&area=santavator1&location=1,2&tokens=marble,elevator-key,nut2,yellowlight,candycane,portals,ball,greenlight,workshop-button,redlight
+https://elevator.kringlecastle.com/?challenge=elevator2&id=b7062fa3-e8da-4d4d-b334-f54f01593bce&username=bbour53&area=santavator2&location=1,2&tokens=marble,elevator-key,nut2,yellowlight,candycane,portals,ball,greenlight,workshop-button,redlight
+
+My guess is this is some console trickery, going to go back and do elf code terminal, see if Ribb Bonbowford has hints
+all he says is "may be a way to bypass Santavator S4 game with browser console"
+so that might not be helpful?
+
+from the console changed the iframe content to "besanta" which allowed me in after the bulbs were properly in place

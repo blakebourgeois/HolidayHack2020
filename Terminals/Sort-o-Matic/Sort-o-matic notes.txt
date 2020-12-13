@@ -1,0 +1,9 @@
+
+1. Matches at least one digit: \d
+2. Matches 3 alpha a-z characters ignoring case: [a-zA-Z]{3}
+3. Matches 2 chars of lowercase a-z or numbers: [a-z0-9]{2}
+4. Matches any 2 chars not uppercase A-L or 1-5: [^A-L1-5]{2}
+5. Matches 3 or more digits only: \d{3,}$
+6. Matches multiple hour:minute:second time formats only: ^([0-1]\d|2[0-3]|^\d)\:[0-5]\d\:[0-5]\d$
+7. Matches MAC address format only while ignoring case: ^[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}$
+8. Matches multiple day, month, and year date formats only: ^([0-2]\d|3[0-1])(\/|\.|\-)([0][0-9]|1[0-2])(\/|\.|\-)\d{4}$
