@@ -18,6 +18,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see [http://www.gnu.org/licenses/].
 
+## cut and edited for holiday hack 2020 ##
 import random
 
 # this is simply a python implementation of a standard Mersenne Twister PRNG.
@@ -96,36 +97,37 @@ def untemper(y):
         y ^= y >> mt19937.u & mt19937.d
     return y
 
+## end of tom's work and start my junk##
 
-if __name__ == "__main__":
-    # create our own version of an MT19937 PRNG.
-    myprng = mt19937(0)
-    # fire up Python's built-in PRNG and seed it with the time...
-    print("Seeding Python's built-in PRNG with the time...")
-    random.seed()
-    # generate some random numbers so we can create a random number of random numbers using Python's built-in PRNG
-    # so random...
-    count1 = random.randint(2000, 10000)
-    count2 = random.randint(2000, 10000)
-    print("Generating a random number (%i) of random numbers using Python's built-in PRNG..." % (count1))
-    print("We do this just to show that this method doesn't depend on being at a particular starting point.")
-    for i in range(count1):
-        f = random.randrange(0xFFFFFFFF)
-    # clone that sucker...
-    print("Generating %i random numbers.\nWe'll use those values to create a clone of the current state of Python's built-in PRNG..." % (mt19937.n))
-    for i in range(mt19937.n):
-        myprng.MT[i] = untemper(random.randrange(0xFFFFFFFF))
-    # check to make sure our cloning worked...
-    print("Generating a random number (%i) of additional random numbers using Python's built-in PRNG..." % (count2))
-    print("Generating those %i random numbers with our clone as well..." % (count2))
-    # generate numbers and throw 'em away...
-    for i in range(count2):
-        f = random.randrange(0xFFFFFFFF)
-        f2 = myprng.extract_number()
-    print("Now, we'll test the clone...")
-    print("\nPython       Our clone")
-    for i in range(20):
-        r1 = random.randrange(0xFFFFFFFF)
-        r2 = myprng.extract_number()
-        print("%10.10i - %10.10i (%r)" % (r1, r2, (r1 == r2)))
-        assert(r1 == r2)
+# impossible.txt needs to contain the 624 previous seeds from the source code of the Snowball Game
+# i copied the element then removed the first tab and "not random enough" string using find and replace in my editor
+with open('impossible.txt') as orig_values:
+  impossible = [line.rstrip('\n') for line in orig_values]
+
+# as strings the values won't work with the mt19937 class so we convert each item into an int, probably a better way to do this from the outset but i'm a noob
+count = 0
+while count < len(impossible):
+    impossible[count] = int(impossible[count])
+    count += 1
+
+# initializing the prng set
+# the initial seed provided to mt19937 doesn't matter because we're going to replace anything present with the historical values we got from the game code
+myprng = mt19937(0)
+
+# set each MT as the impossible value
+for i in range(mt19937.n):
+    myprng.MT[i] = impossible[i]
+
+# used to make sure that my set values matched what was in the document, leaving if it needs verification later
+#for i in range(mt19937.n):
+#    print(myprng.MT[i])
+
+# in the original script the random output was being untempered to match the other function, we need to untemper the values we received from the snowball fight instead
+for i in range(mt19937.n):
+    myprng.MT[i] = untemper(myprng.MT[i])
+    
+# extract_number is needed to get the next seed. 
+# since this is deterministic the output should never change
+# for the snowball fight challenge, play this seed on easy mode to discover the board layout on impossible mode assuming this is actually the redacted seed for layout
+for i in range(1):
+    print(myprng.extract_number())
