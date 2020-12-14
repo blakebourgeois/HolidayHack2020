@@ -97,3 +97,29 @@ do this 4 times to get to 1300000, take the answer and convert the decimal numbe
 first things first, we're given the sha256 hash of jack's block
 it doesn't do us any good to check on this hash and ensure we're getting a collision? if we don't have the sha256 hash
 so first order of business should be to update naughty_nice for sha256 hashing
+
+by getting the block_data_signed() output from the block and sending to sha256 hash, we get the matching value
+but do we need to worry about how the signing works? 
+
+used this code: c2.save_a_block(1010)
+to dump jack's block only to a file to make it more managable, if we have to mess with bytes it should only be within this file
+
+need to go back and look at the composition of the blocks, because if we have to change 4 bytes, we probably at least need to flip his bit from naughty to nice
+changing this results in the block no longer verifying and the hash going Wrong
+
+second thing that will need to be addressed is the junk PDF
+the PDF is filled with glowing text, would not be appropriate in context, need to revert the document
+
+within the PDF we have this at the front:
+%PDF-1.3
+%%<bh:c1><bh:ce><bh:c7><bh:c5>!
+
+1 0 obj
+\<\</Type/Catalog/_Go_Away/Santa/Pages 3 0 R 
+
+--end pdf clipping--
+
+changed the Pages from 2 to 3 to reveal the actual document
+looks like shinny was a little too trusting 
+
+the binary blob is probably being manipulated for hash collision

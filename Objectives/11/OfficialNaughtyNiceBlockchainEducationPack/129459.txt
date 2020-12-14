@@ -1,27 +1,3 @@
-Chain Index: 3
-              Nonce: e68e3e578ae5ace2
-                PID: 000000000000007b
-                RID: 00000000000001c8
-     Document Count: 1
-              Score: 00000064 (100)
-               Sign: 1 (Nice)
-         Data item: 1
-               Data Type: 01 (plaintext)
-             Data Length: 0000002f
-                    Data: b'5468697320697320626c6f636b2032206f6620746865206e6175676874792f6e69636520626c6f636b636861696e2e'
-               Date: 12/13
-               Time: 19:38:46
-       PreviousHash: 092182210449fa8d30804e86c051c739
-  Data Hash to Sign: 71bcd31e2f2e2d1aea80db26fb16a2f1
-          Signature: b'AtlLYoN2lIK0Kf6bsN3hVI61EzP8e4qFG3hOFL3ztwFjy3m9wuObtt12zNspfiEZtajqRV+YgFvIncIj5aI3xLLjRr2oQ7aYzbalm3OonpvheyRnIHV8JAWu8ajpAjmpiswI9L2Si7xMV693mDHhCsfGTNezpbXPWhjcyE4tOmhFItIQIJD3Tm27x9DCNPz8OcxVpgOUxTGwQLDB6S/FV3jrccrDPn2mlcbtWVXDSaU3W8AardmK4ekDQaf0IWzvG3cqC6YtOhIBIAW/LqIqwIXj4otXX9W3djoff040Ub2YSzzuBbyH40nUEAAzZR7JE0dN3Jweuplvi737XORsrA=='
-
-C1: Block chain verify: True
-
-*** WARNING *** Wrong previous hash at block 128449.
-
-*** WARNING *** Blockchain invalid from block 128449 onward.
-
-C2: Block chain verify: False
 Chain Index: 129459
               Nonce: a9447e5771c704f4
                 PID: 0000000000012fd1
