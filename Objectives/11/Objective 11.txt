@@ -3,12 +3,92 @@
 can you predict the nonce for block 130000? 
 Talk to Tangle Coalbox in the Speaker UNpreparedness Room for tips on prediction 
 and Tinsel Upatree for more tips and tools. (Enter just the 32-characters hex hash)
-Answer:
+Answer: 57066318F32F729D
 
 11B: The SHA256 of Jack's altered block is: 
 58a3b9335a6ceb0234c12d35a0564c4e 
 f0e90152d0eb2ce2082383b38028a90f. 
+
 If you're clever, you can recreate the original version of that block 
 by changing the values of only 4 bytes. 
 Once you've recreated the original block, what is the SHA256 of that block?
 Answer:
+
+Starting research
+links provided in hints:
+https://github.com/cr-marcstevens/hashclash ("If Jack was somehow able to change the contents of the block AND the document without changing the hash... that would require a very UNIque hash COLLision.")
+https://speakerdeck.com/ange/colltris ("Apparently Jack was able to change just 4 bytes in the block to completely change everything about it.")
+https://www.youtube.com/watch?v=7rLMl88p-ec (Holiday Hack presentation)
+https://github.com/corkami/collisions ("If you have control over to bytes in a file, it's easy to create MD5 hash collisions. Problem is: there's that nonce that he would have to know ahead of time.")
+
+if you change the blockchain.dat file to a pdf (based on PDF1.3 tag when looking at the file in tag editor) the resulting pdf has the following message
+Twice in the past week, Roberta was seen getting a couple's tattoo.
+Elf-on-the-shelf #16887384721309111396
+3/24/2020
+
+Prof Qwerty Petabyte video notes
+
+in addition to its own data, each block in the blockchain stores hash of all the data in the previous block
+if anything is changed all the blocks in the chain will have their hashes screwed Upatree
+
+Santa Signature System
+blocks can't be added to naughty/nice list if it is not signed with a digital Signature
+requires 3 people to activate, each with a password and hardware toekn
+
+block may have up to nine documents
+could be text, image, video...
+or even binary blob
+(usually pdfs)
+
+Naughty/Nice Block layout
+Index: Number of block on the chain
+Nonce: random, 64 bit value added by blockchain code (security against issues with MD5)
+PID: (user supplied) ID number of naughty/nice individual
+RID: (user supplied) ID of reporting party
+Document count: (user supplied) Number of attached documents
+Score: (user supplied) amount of naughty/nice points assigned to incident
+Naughty/Nice: (user supplied) flag indicating naughty/niceness (1 = nice, 0 = naughty)
+Documents: (user supplied) several attached documents
+Date/Time: date/time added to the blockchain
+Previous hash - the hash of the previous block
+Signature: S3 digital signature of the MD5 hash of all previous data
+
+A hash of the entire block (including the signature) will be used as the previous hash on the next block
+
+Start at the first (genesis block)
+if any data has been altered, every block from that point forward will be invalid because the previous hash will be incorrect
+
+"JF Consulting" had them move codebase to python
+they provided a "random" 64-bit nonce to each block to provide security against md5-related issues
+probably related to mt19937 allowing jack frost to predict a nonce
+
+oh, most of this detail is in the naughty_nice.py file
+
+129459 is suspicious, it's the shinny upatree file praising Jack Frost
+
+to get that block: 
+with open('official_public.pem', 'rb') as fh:
+        official_public_key = RSA.importKey(fh.read())
+c2 = Chain(load=True, filename='blockchain.dat')
+print('C2: Block chain verify: %s' % (c2.verify_chain(official_public_key)))
+print(c2.blocks[1010])
+
+output saved to 129459.txt
+interestingly, had a binary blob attached (manipulating this blob probably helped create the hash collision, would need to check out those github contents, maybe those do that)
+for good measure exported the previous 650 blocks to a file, as well, might want to pull the nonces to run it through the mt19937 decryption
+
+wait, just read the clue again, I'm going to need to predict 130000 specificallly, damn
+there are 1548 items on the chain in our file
+
+need to figure out if there is anything i need to do about this error:
+*** WARNING *** Wrong previous hash at block 128449.
+
+*** WARNING *** Blockchain invalid from block 128449 onward.
+
+anyways, for getting 1300000
+extract the last 312 nonces (do a counter and pull down c2.blocks[x].nonce)
+split the nonce into two 32bit objects and list them sequentially in a file, now you have 624 nonces
+the randrange / getrandbytes creates multiple 32bit words, as many as needed to fulfill the large request
+in this case it's a simple 2 words
+we have to extract 2 numbers from the pnrg then re-combine them as a 64bit int, 32 bytes from the first int followed by the 32 bytes of the second int
+do this 4 times to get to 1300000, take the answer and convert the decimal number to hex for the answer: 57066318F32F729D

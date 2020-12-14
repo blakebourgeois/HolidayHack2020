@@ -432,8 +432,8 @@ if __name__ == '__main__':
         block_data['score'] = 100 # this is the Naughty/Nice score of the report
         block_data['sign'] = Nice # this indicates whether the report is about naughty or nice behavior
         c1.add_block(block_data)
-    print(c1.blocks[3])
-    print('C1: Block chain verify: %s' % (c1.verify_chain(public_key)))
+    ##print(c1.blocks[3])
+    #print('C1: Block chain verify: %s' % (c1.verify_chain(public_key)))
 
 # Note: This is how you would load and verify a blockchain contained in a file called blockchain.dat
 #
@@ -443,3 +443,21 @@ if __name__ == '__main__':
 #    print('C2: Block chain verify: %s' % (c2.verify_chain(official_public_key)))
 #    print(c2.blocks[0])
 #    c2.blocks[0].dump_doc(1)
+
+with open('official_public.pem', 'rb') as fh:
+        official_public_key = RSA.importKey(fh.read())
+c2 = Chain(load=True, filename='blockchain.dat')
+#print('C2: Block chain verify: %s' % (c2.verify_chain(official_public_key)))
+#print(c2.blocks[1010])
+
+count = 924
+while count < 1548:
+    print(c2.blocks[count].nonce)
+    count += 1
+#print(c2.blocks[1547])
+
+#dump all files
+#count = 0
+#while count < len(c2.blocks):
+#    c2.blocks[count].dump_doc(0)
+#    count += 1

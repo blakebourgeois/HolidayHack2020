@@ -27,3 +27,9 @@ might need to figure out how the 32bit integer is being converted in to a float,
 
 tom provides toolkit: https://github.com/tliston/mt19937
 
+Stepped through Tom's script to find out how it worked.
+The impossible mode page source lists 624 "rejected" seeds for building the board (as per Tangle's hint)
+The "name" provides a seed for the board layout, which is why you can take a hard seed and input it on easy/medium to replay the game
+By putting all 624 values into the script, rather than letting the script generate the values, we can predict the "redacted" seed
+By playing the redacted seed on easy, we can reveal the board layout of a simultaneously played impossible game
+If you start a new game on impossible you have to re-run the script against the new values to predict the current seed
