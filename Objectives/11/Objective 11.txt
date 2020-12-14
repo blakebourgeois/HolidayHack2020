@@ -84,6 +84,7 @@ need to figure out if there is anything i need to do about this error:
 *** WARNING *** Wrong previous hash at block 128449.
 
 *** WARNING *** Blockchain invalid from block 128449 onward.
+(solution: add previous_hash parameter to the verify chain function)
 
 anyways, for getting 1300000
 extract the last 312 nonces (do a counter and pull down c2.blocks[x].nonce)
@@ -92,3 +93,7 @@ the randrange / getrandbytes creates multiple 32bit words, as many as needed to 
 in this case it's a simple 2 words
 we have to extract 2 numbers from the pnrg then re-combine them as a 64bit int, 32 bytes from the first int followed by the 32 bytes of the second int
 do this 4 times to get to 1300000, take the answer and convert the decimal number to hex for the answer: 57066318F32F729D
+
+first things first, we're given the sha256 hash of jack's block
+it doesn't do us any good to check on this hash and ensure we're getting a collision? if we don't have the sha256 hash
+so first order of business should be to update naughty_nice for sha256 hashing
