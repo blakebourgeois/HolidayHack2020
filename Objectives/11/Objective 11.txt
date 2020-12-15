@@ -110,7 +110,8 @@ changing this results in the block no longer verifying and the hash going Wrong
 second thing that will need to be addressed is the junk PDF
 the PDF is filled with glowing text, would not be appropriate in context, need to revert the document
 
-within the PDF we have this at the front:
+within the PDF we have this at the front
+--start pdf clipping--
 %PDF-1.3
 %%<bh:c1><bh:ce><bh:c7><bh:c5>!
 
@@ -122,4 +123,30 @@ within the PDF we have this at the front:
 changed the Pages from 2 to 3 to reveal the actual document
 looks like shinny was a little too trusting 
 
-the binary blob is probably being manipulated for hash collision
+the binary blob is probably being manipulated for hash collision? that or junk within the PDF (or that AND junk within the PDF)
+the colltris talk mentions a UniColl hash attack, which is what we're going to want to look into based on Elf
+
+might be able to set a prefix in hashcoll for items we know can't/won't change
+might be able to generate a couple of hash collisions independent of real content and discern where the change is
+
+create a hash collision with the original block on a file? then do it again with the collided file?
+or make several copies of the block with different hashes and check the diffs
+
+md5 works in 64 byte blocks
+collision works based on prefix and padding, in 64byte chunks, might want to define the prefix as deep into the block as possible
+both files can have the same suffix, or backend
+in theory I think we can probably define a full prefix up to the bin and suffix post bin (as 64 bytes allow)
+0x00000040 to 0x00000BF are ripe for it
+
+we know padding is a no go because of the way the script reads the block (and also because we only need to modify 2 more bytes)
+unicoll only needs a unique prefix, doesn't need padding, this could work but unless the other collision is much harder?
+"you can set the first difference"
+okay so we can set a prefix ALL THE WAY up to before the bin block, where jack frost goes from naughty to nice...
+prefix length must be multiple of 4...prefix can go to 0x00000053, where the bin starts exactly
+but that might make the script pretty slow
+FastColl sounds better despite the elf talking about unicoll? but does it have something to do with needing two bytes modified?
+
+over thinking this, or not thinking about it enough
+we only need to focus on the first 192 bytes
+the first 64 bytes will always be the same, it gets dicier after, but we can push our luck?
+and do some transforms as needed...

@@ -457,7 +457,7 @@ with open('official_public.pem', 'rb') as fh:
         official_public_key = RSA.importKey(fh.read())
 jack = Chain(load=True, filename='block.dat')
 print('Jack: Block chain verify: %s' % (jack.verify_chain(official_public_key,"4a91947439046c2dbaa96db38e924665")))
-print(jack.blocks[0])
+#print(jack.blocks[0])
 
 ## This currently matches the SHA256 hash provided by the objective ##
 # 58a3b9335a6ceb0234c12d35a0564c4ef0e90152d0eb2ce2082383b38028a90f #
@@ -465,13 +465,7 @@ hash_object = SHA256.new()
 jfData_signed = jack.blocks[0].block_data_signed()
 hash_object.update(jfData_signed)
 hex_dig = hash_object.hexdigest()
-correct_hash = "58a3b9335a6ceb0234c12d35a0564c4ef0e90152d0eb2ce2082383b38028a90f"
-if hex_dig == correct_hash:
-    print("the hash matches")
-    print(hex_dig)
-if hex_dig != correct_hash:
-    print("oh no")
-    print(hex_dig)
+print("Current SHA256 Hash: "+hex_dig)
 
 ## DON'T PRINT 1010 DIRECTLY, LOCKS UP VS CODE, IF YOU CALL FROM POWERSHELL PIPING TO CLIP WOKRS ##
 #print(c2.blocks[1010])
